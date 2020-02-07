@@ -1,0 +1,19 @@
+Package: mappp
+Title: map in parallel with progress
+Version: 0.1
+Authors@R: 
+    person(given = "Cole",
+           family = "Brokamp",
+           role = c("aut", "cre"),
+           email = "cole.brokamp@gmail.com")
+Description: This package provides one function, which is a wrapper around purrr::map() with some extras on top, including parallel computation, progress bars, error handling, and result caching.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    purrr,
+    memoise,
+    progress,
+    pbmcapply,
+    parallel
+RoxygenNote: 7.0.2
