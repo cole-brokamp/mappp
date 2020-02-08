@@ -68,20 +68,22 @@ mappp <- function(.x, .f,
   if (parallel) {
     if (is.null(num.cores)) num.cores <- parallel::detectCores()
     if (is.na(num.cores)) num.cores <- 1
+    if (identical(.Platform$OS.type, "windows")) {
+      message("detected a windows platform; disabling parallel processing")
+      num.cores <- 1
+    }
   } else {
     num.cores <- 1
   }
 
-  # TODO if using windows, message and set num.cores to 1
-
   if (num.cores == 1) out <- lapply_pb(.x, .f)
 
-  if (num.cores > 1 && Sys.getenv("RSTUDIO") == "1") {
-    message("progress bar doesn't work in RStudio, follow the file \".progress\" instead")
+  if (num.cores > 1 && identical(.Platform$GUI, "RStudio")) {
+    message("progress bar doesn't work in RStudio; follow the file \".progress\" instead")
     out <- mclapply_pb_fallback(.x, .f, num.cores)
   }
 
-  if (num.cores > 1 && Sys.getenv("RSTUDIO") == "") {
+  if (num.cores > 1 && !identical(.Platform$GUI, "RStudio")) {
     out <- mclapply_pb(.x, .f, num.cores)
   }
 
