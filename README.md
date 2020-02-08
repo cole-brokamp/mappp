@@ -1,6 +1,13 @@
 
 # mappp
 
+> **map** in **p**arallel with **p**rogress
+
+<!-- badges: start -->
+[![CRAN status](https://www.r-pkg.org/badges/version/mappp)](https://CRAN.R-project.org/package=mappp)
+[![Travis build status](https://travis-ci.org/cole-brokamp/mappp.svg?branch=master)](https://travis-ci.org/cole-brokamp/mappp)
+<!-- badges: end -->
+
 The goal of mappp is to provide a simple implementation of `purrr::map` or `base::lapply` that provides enhanced features like parallel computation, progress bars, error handling, and result caching.
 
 ## Installation
@@ -22,8 +29,10 @@ remotes::install_github('cole-brokamp/mappp')
 ```r
 X <- list('x' = 100, 'y' = 'a', 'z' = 200)
 slow_log <- function(.x) {Sys.sleep(0.5); log(.x)}
+
 # by default returns NA on error
 mappp(X, slow_log)
+
 # when not using error, entire calculation will fail
 mappp(X, slow_log, error.value=NULL)
 ```
