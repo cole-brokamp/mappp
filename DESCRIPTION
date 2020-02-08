@@ -19,3 +19,5 @@ Imports:
 RoxygenNote: 7.0.2
 URL: https://github.com/cole-brokamp/mappp
 BugReports: https://github.com/cole-brokamp/mappp/issues
+Suggests: 
+    testthat (>= 2.1.0)
