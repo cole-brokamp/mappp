@@ -1,12 +1,12 @@
 Package: mappp
-Title: map in parallel with progress
+Title: Map in Parallel with Progress
 Version: 0.1
 Authors@R: 
     person(given = "Cole",
            family = "Brokamp",
            role = c("aut", "cre"),
            email = "cole.brokamp@gmail.com")
-Description: This package provides one function, which is a wrapper around purrr::map() with some extras on top, including parallel computation, progress bars, error handling, and result caching.
+Description: Provides one function, which is a wrapper around purrr::map() with some extras on top, including parallel computation, progress bars, error handling, and result caching.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
