@@ -112,7 +112,7 @@ mclapply_pb <- function(X, FUN, mc.cores){
   n <- length(X)
   f <- fifo(tempfile(), open = "w+b", blocking = T)
   on.exit(close(f))
-  p <- parallel:::mcfork()
+  p <- parallel.mcfork()
   pbb <- pbmcapply::progressBar(0, n, style = 'ETA', width = 60)
   utils::setTxtProgressBar(pbb, 0)
   progress <- 0
@@ -123,7 +123,7 @@ mclapply_pb <- function(X, FUN, mc.cores){
       utils::setTxtProgressBar(pbb, progress)
     }
     cat("\n")
-    parallel:::mcexit()
+    parallel.mcexit()
   }
   wrapFUN <- function(i) {
     out <- FUN(i)
@@ -148,3 +148,8 @@ mclapply_pb_fallback <- function(X, FUN, num.cores) {
   }
   parallel::mclapply(seq_len(n), wrapFUN, mc.cores = num.cores)
 }
+
+
+parallel:::mcexit
+
+parallel:::mcfork
