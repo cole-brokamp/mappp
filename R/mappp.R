@@ -108,6 +108,12 @@ lapply_pb <- function(X, FUN) {
   return(tmp)
 }
 
+parallel.mcexit <-
+  utils::getFromNamespace("mcexit", "parallel")
+
+parallel.mcfork <-
+  utils::getFromNamespace("mcfork", "parallel")
+
 mclapply_pb <- function(X, FUN, mc.cores){
   n <- length(X)
   f <- fifo(tempfile(), open = "w+b", blocking = T)
@@ -148,8 +154,3 @@ mclapply_pb_fallback <- function(X, FUN, num.cores) {
   }
   parallel::mclapply(seq_len(n), wrapFUN, mc.cores = num.cores)
 }
-
-
-parallel:::mcexit
-
-parallel:::mcfork
