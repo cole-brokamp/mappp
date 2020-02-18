@@ -1,6 +1,6 @@
 Package: mappp
 Title: Map in Parallel with Progress
-Version: 0.1
+Version: 0.2
 Authors@R: 
     person(given = "Cole",
            family = "Brokamp",
