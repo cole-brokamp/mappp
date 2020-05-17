@@ -2,3 +2,5 @@
 ^\.travis\.yml$
 README.md
 ^cran-comments\.md$
+^CRAN-RELEASE$
+^\.github$
