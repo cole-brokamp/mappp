@@ -23,7 +23,7 @@
 #' @param parallel logical; use parallel processing?
 #' @param num.cores the number of cores used for parallel processing.  Can be
 #'   specified as an integer, or it will guess the number of cores available
-#'   with detectCores(). won't have an effect if parallel is FALSE
+#'   with parallelly::availableCores(). won't have an effect if parallel is FALSE
 #' @param cache defaults to FALSE, which means no cache used. If TRUE, cache the results locally in a folder named according to \code{cache.name} using the memoise package
 #' @param cache.name a character string to use a custom cache folder name (e.g. "my_cache"); defaults to "cache"
 #' @param error.value (defaults to NA) use purrr::possibly to replace errors with this value instead of interrupting the process; set to NULL to not use error handling and instead interrupt the calculation
@@ -66,7 +66,7 @@ mappp <- function(.x, .f,
 
   # set number of cores
   if (parallel) {
-    if (is.null(num.cores)) num.cores <- parallel::detectCores()
+    if (is.null(num.cores)) num.cores <- parallelly::availableCores()
     if (is.na(num.cores)) num.cores <- 1
     if (identical(.Platform$OS.type, "windows")) {
       message("detected a windows platform; disabling parallel processing")

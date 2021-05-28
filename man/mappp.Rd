@@ -33,7 +33,7 @@ mappp(
 
 \item{num.cores}{the number of cores used for parallel processing.  Can be
 specified as an integer, or it will guess the number of cores available
-with detectCores(). won't have an effect if parallel is FALSE}
+with parallelly::availableCores(). won't have an effect if parallel is FALSE}
 }
 \description{
 This function is a wrapper around purrr::map() with some extras on top,
