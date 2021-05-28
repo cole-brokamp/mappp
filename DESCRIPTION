@@ -15,7 +15,8 @@ Imports:
     memoise,
     progress,
     pbmcapply,
-    parallel
+    parallel,
+    parallelly
 RoxygenNote: 7.0.2
 URL: https://github.com/cole-brokamp/mappp
 BugReports: https://github.com/cole-brokamp/mappp/issues
