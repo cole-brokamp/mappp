@@ -5,7 +5,7 @@ slow_log <- function(.x) {
 }
 
 test_that("lapply_pb works", {
-  expect_equal( mappp(X, slow_log, parallel = FALSE),
+  expect_equal(mappp(X, slow_log, parallel = FALSE),
                lapply(1:5, log))
 })
 
