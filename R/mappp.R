@@ -31,24 +31,26 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' X <- list('x' = 100, 'y' = 'a', 'z' = 200)
-#' slow_log <- function(.x) {Sys.sleep(0.5); log(.x)}
+#' X <- list("x" = 100, "y" = "a", "z" = 200)
+#' slow_log <- function(.x) {
+#'   Sys.sleep(0.5)
+#'   log(.x)
+#' }
 #' # by default returns NA on error
 #' mappp(X, slow_log)
 #' # when not using error, entire calculation will fail
-#' mappp(X, slow_log, error.value=NULL)
+#' mappp(X, slow_log, error.value = NULL)
 #' # showing error messages when they occur rather than afterwards can be useful
 #' # but will cause problems with error bar displays
 #' mappp(X, slow_log, quiet = FALSE)
 #' }
-
+#'
 mappp <- function(.x, .f,
                   parallel = FALSE,
-                  cache = FALSE, cache.name = 'cache',
+                  cache = FALSE, cache.name = "cache",
                   error.value = NA,
                   quiet = TRUE,
                   num.cores = NULL) {
-
   .f <- purrr::as_mapper(.f)
 
   if (cache) {
@@ -58,8 +60,9 @@ mappp <- function(.x, .f,
 
   if (!is.null(error.value)) {
     .f <- purrr::possibly(.f,
-                           otherwise = error.value,
-                           quiet = quiet)
+      otherwise = error.value,
+      quiet = quiet
+    )
   }
 
   if (!is.vector(.x) || is.object(.x)) .x <- as.list(.x)
@@ -91,18 +94,22 @@ mappp <- function(.x, .f,
 }
 
 lapply_pb <- function(X, FUN) {
-  frmt <- '... :what (:percent) [ ETA: :eta | Elapsed: :elapsed ]'
+  frmt <- "... :what (:percent) [ ETA: :eta | Elapsed: :elapsed ]"
   n <- length(X)
-  tmp <- vector('list', n)
-  pbb <- progress::progress_bar$new(total = 100,
-                                    format = frmt,
-                                    clear = FALSE,
-                                    force = TRUE,
-                                    show_after = 0)
+  tmp <- vector("list", n)
+  pbb <- progress::progress_bar$new(
+    total = 100,
+    format = frmt,
+    clear = FALSE,
+    force = TRUE,
+    show_after = 0
+  )
   pbb$tick(0)
   for (i in seq_len(n)) {
-    pbb$tick(len = 100/n,
-             tokens = list(what = paste0('processing ', i, ' of ', n)))
+    pbb$tick(
+      len = 100 / n,
+      tokens = list(what = paste0("processing ", i, " of ", n))
+    )
     tmp[[i]] <- FUN(X[[i]])
   }
   return(tmp)
@@ -114,12 +121,12 @@ parallel.mcexit <-
 parallel.mcfork <-
   utils::getFromNamespace("mcfork", "parallel")
 
-mclapply_pb <- function(X, FUN, mc.cores){
+mclapply_pb <- function(X, FUN, mc.cores) {
   n <- length(X)
   f <- fifo(tempfile(), open = "w+b", blocking = T)
   on.exit(close(f))
   p <- parallel.mcfork()
-  pbb <- pbmcapply::progressBar(0, n, style = 'ETA', width = 60)
+  pbb <- pbmcapply::progressBar(0, n, style = "ETA", width = 60)
   utils::setTxtProgressBar(pbb, 0)
   progress <- 0
   if (inherits(p, "masterProcess")) {
@@ -143,13 +150,16 @@ mclapply_pb_fallback <- function(X, FUN, num.cores) {
   n <- length(X)
   wrapFUN <- function(i) {
     out <- FUN(X[[i]])
-    out_percentage <- round(i/n*100, digits = 0)
-    cat(paste0('   ... processing ',
-               i, ' of ', n,
-               ' (', out_percentage, '%)',
-               '\n'),
-        file = '.progress',
-        append = FALSE)
+    out_percentage <- round(i / n * 100, digits = 0)
+    cat(paste0(
+      "   ... processing ",
+      i, " of ", n,
+      " (", out_percentage, "%)",
+      "\n"
+    ),
+    file = ".progress",
+    append = FALSE
+    )
     return(out)
   }
   parallel::mclapply(seq_len(n), wrapFUN, mc.cores = num.cores)

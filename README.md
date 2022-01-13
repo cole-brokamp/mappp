@@ -16,7 +16,7 @@ The goal of mappp is to provide a simple implementation of `purrr::map` or `base
 
 ## Installation
 
-mappp is currently not hosted on CRAN and the development version of mappp can be installed from GitHub with:
+mappp is currently not hosted on CRAN and the latest version of mappp can be installed from GitHub with:
 
 ```r
 remotes::install_github('cole-brokamp/mappp')
