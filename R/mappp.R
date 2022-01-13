@@ -19,7 +19,7 @@
 #'
 #' @param .x list or vector of objects to apply over
 #' @param .f function to apply; allows for compact anonymous functions (see
-#'   \code{purrr::as_mapper()} for details)
+#'   \code{rlang::as_function()} for details)
 #' @param parallel logical; use parallel processing?
 #' @param num.cores the number of cores used for parallel processing.  Can be
 #'   specified as an integer, or it will guess the number of cores available
@@ -51,7 +51,7 @@ mappp <- function(.x, .f,
                   error.value = NA,
                   quiet = TRUE,
                   num.cores = NULL) {
-  .f <- purrr::as_mapper(.f)
+  .f <- rlang::as_function(.f)
 
   if (cache) {
     fc <- memoise::cache_filesystem(cache.name)
