@@ -4,7 +4,7 @@
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/mappp)](https://CRAN.R-project.org/package=mappp)
-[![R build status](https://github.com/cole-brokamp/mappp/workflows/R-CMD-check/badge.svg)](https://github.com/cole-brokamp/mappp/actions)
+[![R-CMD-check](https://github.com/cole-brokamp/mappp/workflows/R-CMD-check/badge.svg)](https://github.com/cole-brokamp/mappp/actions)
 <!-- badges: end -->
 
 The goal of mappp is to provide a simple implementation of `purrr::map` or `base::lapply` that provides enhanced features like parallel computation, progress bars, error handling, and result caching.
