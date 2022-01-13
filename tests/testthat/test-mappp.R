@@ -21,7 +21,7 @@ test_that("mclapply_pb works", {
 
 X <- list("x" = 100, "y" = "a", "z" = 200)
 
-test_that("error is ignored", {
+test_that("error is ignored and replaced with NA", {
   expect_equal(
     mappp(X, slow_log),
     list(log(100), NA, log(200))

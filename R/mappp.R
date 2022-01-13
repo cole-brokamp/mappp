@@ -14,7 +14,7 @@
 #' parallel processing (see the discussion at
 #' http://stackoverflow.com/questions/27314011/mcfork-in-rstudio). In this
 #' specific case (R Studio + parallel processing), text updates will be printed
-#' to the file `.process`. Use a shell and `tail -f .progress` to see the
+#' to the file `.progress`. Use a shell and `tail -f .progress` to see the
 #' updates.
 #'
 #' @param .x list or vector of objects to apply over
@@ -138,17 +138,17 @@ mclapply_pb <- function(X, FUN, mc.cores) {
     cat("\n")
     parallel.mcexit()
   }
-  wrapFUN <- function(i) {
+  wrapper_f <- function(i) {
     out <- FUN(i)
     writeBin(1, f)
     return(out)
   }
-  parallel::mclapply(X, wrapFUN, mc.cores = mc.cores)
+  parallel::mclapply(X, wrapper_f, mc.cores = mc.cores)
 }
 
 mclapply_pb_fallback <- function(X, FUN, num.cores) {
   n <- length(X)
-  wrapFUN <- function(i) {
+  wrapper_f <- function(i) {
     out <- FUN(X[[i]])
     out_percentage <- round(i / n * 100, digits = 0)
     cat(paste0(
@@ -162,5 +162,5 @@ mclapply_pb_fallback <- function(X, FUN, num.cores) {
     )
     return(out)
   }
-  parallel::mclapply(seq_len(n), wrapFUN, mc.cores = num.cores)
+  parallel::mclapply(seq_len(n), wrapper_f, mc.cores = num.cores)
 }
