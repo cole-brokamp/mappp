@@ -9,29 +9,30 @@ mappp(
   .f,
   parallel = FALSE,
   cache = FALSE,
-  cache.name = "cache",
-  error.value = NA,
-  quiet = TRUE,
-  num.cores = NULL
+  cache_name = "cache",
+  error_capture = TRUE,
+  error_quiet = TRUE,
+  num_cores = NULL
 )
 }
 \arguments{
 \item{.x}{list or vector of objects to apply over}
 
 \item{.f}{function to apply; allows for compact anonymous functions (see
-\code{purrr::as_mapper()} for details)}
+\code{rlang::as_function()} for details)}
 
 \item{parallel}{logical; use parallel processing?}
 
-\item{cache}{defaults to FALSE, which means no cache used. If TRUE, cache the results locally in a folder named according to \code{cache.name} using the memoise package}
+\item{cache}{defaults to FALSE, which means no cache used. If TRUE, cache the results locally in a folder named according to \code{cache_name} using the memoise package}
 
-\item{cache.name}{a character string to use a custom cache folder name (e.g. "my_cache"); defaults to "cache"}
+\item{cache_name}{a character string to use a custom cache folder name (e.g. "my_cache"); defaults to "cache"}
 
-\item{error.value}{(defaults to NA) use purrr::possibly to replace errors with this value instead of interrupting the process; set to NULL to not use error handling and instead interrupt the calculation}
+\item{error_capture}{apply function to all elements and return those that error as \code{NA}
+; this also messages user with name/index of offending element and resulting error message}
 
-\item{quiet}{logical, suppress error messages until the end of calculation? or show them as they occur}
+\item{error_quiet}{quiet individual error messages when capturing error messages? or show them as they occur?}
 
-\item{num.cores}{the number of cores used for parallel processing.  Can be
+\item{num_cores}{the number of cores used for parallel processing.  Can be
 specified as an integer, or it will guess the number of cores available
 with parallelly::availableCores(). won't have an effect if parallel is FALSE}
 }
@@ -51,19 +52,23 @@ single process workers, it has a problem showing the progress bar if using
 parallel processing (see the discussion at
 http://stackoverflow.com/questions/27314011/mcfork-in-rstudio). In this
 specific case (R Studio + parallel processing), text updates will be printed
-to the file `.process`. Use a shell and `tail -f .progress` to see the
+to the file `.progress`. Use a shell and `tail -f .progress` to see the
 updates.
 }
 \examples{
 \dontrun{
-X <- list('x' = 100, 'y' = 'a', 'z' = 200)
-slow_log <- function(.x) {Sys.sleep(0.5); log(.x)}
+X <- list("x" = 100, "y" = "a", "z" = 200)
+slow_log <- function(.x) {
+  Sys.sleep(0.5)
+  log(.x)
+}
 # by default returns NA on error
 mappp(X, slow_log)
 # when not using error, entire calculation will fail
-mappp(X, slow_log, error.value=NULL)
+mappp(X, slow_log, error_capture = FALSE)
 # showing error messages when they occur rather than afterwards can be useful
-# but will cause problems with error bar displays
-mappp(X, slow_log, quiet = FALSE)
+# but will cause problems with progress bar displays
+mappp(X, slow_log, error_quiet = FALSE)
 }
+
 }

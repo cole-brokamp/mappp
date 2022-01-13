@@ -21,13 +21,14 @@
 #' @param .f function to apply; allows for compact anonymous functions (see
 #'   \code{rlang::as_function()} for details)
 #' @param parallel logical; use parallel processing?
-#' @param num.cores the number of cores used for parallel processing.  Can be
+#' @param num_cores the number of cores used for parallel processing.  Can be
 #'   specified as an integer, or it will guess the number of cores available
 #'   with parallelly::availableCores(). won't have an effect if parallel is FALSE
-#' @param cache defaults to FALSE, which means no cache used. If TRUE, cache the results locally in a folder named according to \code{cache.name} using the memoise package
-#' @param cache.name a character string to use a custom cache folder name (e.g. "my_cache"); defaults to "cache"
-#' @param error.value (defaults to NA) use purrr::possibly to replace errors with this value instead of interrupting the process; set to NULL to not use error handling and instead interrupt the calculation
-#' @param quiet logical, suppress error messages until the end of calculation? or show them as they occur
+#' @param cache defaults to FALSE, which means no cache used. If TRUE, cache the results locally in a folder named according to \code{cache_name} using the memoise package
+#' @param cache_name a character string to use a custom cache folder name (e.g. "my_cache"); defaults to "cache"
+#' @param error_capture apply function to all elements and return those that error as \code{NA}
+#' ; this also messages user with name/index of offending element and resulting error message
+#' @param error_quiet quiet individual error messages when capturing error messages? or show them as they occur?
 #' @export
 #' @examples
 #' \dontrun{
@@ -39,55 +40,72 @@
 #' # by default returns NA on error
 #' mappp(X, slow_log)
 #' # when not using error, entire calculation will fail
-#' mappp(X, slow_log, error.value = NULL)
+#' mappp(X, slow_log, error_capture = FALSE)
 #' # showing error messages when they occur rather than afterwards can be useful
-#' # but will cause problems with error bar displays
-#' mappp(X, slow_log, quiet = FALSE)
+#' # but will cause problems with progress bar displays
+#' mappp(X, slow_log, error_quiet = FALSE)
 #' }
 #'
 mappp <- function(.x, .f,
                   parallel = FALSE,
-                  cache = FALSE, cache.name = "cache",
-                  error.value = NA,
-                  quiet = TRUE,
-                  num.cores = NULL) {
+                  cache = FALSE, cache_name = "cache",
+                  error_capture = TRUE,
+                  error_quiet = TRUE,
+                  num_cores = NULL) {
+
   .f <- rlang::as_function(.f)
 
   if (cache) {
-    fc <- memoise::cache_filesystem(cache.name)
+    fc <- memoise::cache_filesystem(cache_name)
     .f <- memoise::memoise(.f, cache = fc)
   }
 
-  if (!is.null(error.value)) {
-    .f <- purrr::possibly(.f,
-      otherwise = error.value,
-      quiet = quiet
-    )
+  if (error_capture) {
+    .f <- purrr::safely(.f, quiet = error_quiet)
   }
 
   if (!is.vector(.x) || is.object(.x)) .x <- as.list(.x)
 
   # set number of cores
   if (parallel) {
-    if (is.null(num.cores)) num.cores <- parallelly::availableCores()
-    if (is.na(num.cores)) num.cores <- 1
+    if (is.null(num_cores)) num_cores <- parallelly::availableCores()
+    if (is.na(num_cores)) num_cores <- 1
     if (identical(.Platform$OS.type, "windows")) {
       message("detected a windows platform; disabling parallel processing")
-      num.cores <- 1
+      num_cores <- 1
     }
   } else {
-    num.cores <- 1
+    num_cores <- 1
   }
 
-  if (num.cores == 1) out <- lapply_pb(.x, .f)
+  if (num_cores == 1) out <- lapply_pb(.x, .f)
 
-  if (num.cores > 1 && identical(.Platform$GUI, "RStudio")) {
+  if (num_cores > 1 && identical(.Platform$GUI, "RStudio")) {
     message("progress bar doesn't work in RStudio; follow the file \".progress\" instead")
-    out <- mclapply_pb_fallback(.x, .f, num.cores)
+    out <- mclapply_pb_fallback(.x, .f, num_cores)
   }
 
-  if (num.cores > 1 && !identical(.Platform$GUI, "RStudio")) {
-    out <- mclapply_pb(.x, .f, num.cores)
+  if (num_cores > 1 && !identical(.Platform$GUI, "RStudio")) {
+    out <- mclapply_pb(.x, .f, num_cores)
+  }
+
+  ## if error_capture create output list and emit number of errors
+  if (error_capture) {
+    out <- purrr::transpose(out)
+
+    which_error <- which(!sapply(out$error, is.null))
+
+    if (length(which_error) > 0) {
+      message(length(which_error), " errors occurred")
+      message("the first one occurred in element ", which_error[1], ":")
+      if (!is.null(names(which_error[1]))) {
+        message("(which had the name ", names(which_error[1]), ")")
+      }
+      message("\n", out$error[[which_error[1]]], "\n")
+      out <- purrr::modify_at(out$result, which_error, ~NA)
+    } else {
+      out <- out$result
+    }
   }
 
   return(out)
@@ -146,7 +164,7 @@ mclapply_pb <- function(X, FUN, mc.cores) {
   parallel::mclapply(X, wrapper_f, mc.cores = mc.cores)
 }
 
-mclapply_pb_fallback <- function(X, FUN, num.cores) {
+mclapply_pb_fallback <- function(X, FUN, num_cores) {
   n <- length(X)
   wrapper_f <- function(i) {
     out <- FUN(X[[i]])
@@ -162,5 +180,5 @@ mclapply_pb_fallback <- function(X, FUN, num.cores) {
     )
     return(out)
   }
-  parallel::mclapply(seq_len(n), wrapper_f, mc.cores = num.cores)
+  parallel::mclapply(seq_len(n), wrapper_f, mc.cores = num_cores)
 }
