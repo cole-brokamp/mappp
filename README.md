@@ -14,6 +14,8 @@ The goal of mappp is to provide a simple implementation of `purrr::map` or `base
 - **parallel**: if `parallel = TRUE`, `mappp()` will attempt to calculate in parallel by using the maximum number of available cores
 - **cache**: if `cache = TRUE`, `mappp()` will memoise the results in a local cache folder
 
+Please note that this package relies on forking via [`parallel::mclapply()`](https://stat.ethz.ch/R-manual/R-devel/library/parallel/html/mclapply.html) which means that parallel computation is not available on Windows platforms.
+
 ## Installation
 
 mappp is currently not hosted on CRAN and the latest version of mappp can be installed from GitHub with:
@@ -21,9 +23,3 @@ mappp is currently not hosted on CRAN and the latest version of mappp can be ins
 ```r
 remotes::install_github('cole-brokamp/mappp')
 ```
-
-<!-- You can install the released version of mappp from [CRAN](https://CRAN.R-project.org) with: -->
-
-<!-- ``` r -->
-<!-- install.packages("mappp") -->
-<!-- ``` -->
