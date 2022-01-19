@@ -133,18 +133,25 @@ lapply_pb <- function(X, FUN) {
   return(tmp)
 }
 
-parallel.mcexit <-
-  utils::getFromNamespace("mcexit", "parallel")
+utils::globalVariables(c("parallel_mcexit", "parallel_mcfork"))
+if (FALSE) pbmcapply::pbmclapply()
+if (!.Platform$OS.type == "windows") {
+  parallel_mcexit <-
+    utils::getFromNamespace("mcexit", "parallel")
 
-parallel.mcfork <-
-  utils::getFromNamespace("mcfork", "parallel")
+  parallel_mcfork <-
+    utils::getFromNamespace("mcfork", "parallel")
+}
 
 mclapply_pb <- function(X, FUN, mc.cores) {
   n <- length(X)
   f <- fifo(tempfile(), open = "w+b", blocking = T)
   on.exit(close(f))
-  p <- parallel.mcfork()
-  pbb <- pbmcapply::progressBar(0, n, style = "ETA", width = 60)
+  p <- parallel_mcfork()
+
+  pbb_eta <- utils::getFromNamespace("txtProgressBarETA", "pbmcapply")
+  pbb <- pbb_eta(min = 0, max = n, initial = 0, char = "=", width = 60, file = "")
+  
   utils::setTxtProgressBar(pbb, 0)
   progress <- 0
   if (inherits(p, "masterProcess")) {
@@ -154,7 +161,7 @@ mclapply_pb <- function(X, FUN, mc.cores) {
       utils::setTxtProgressBar(pbb, progress)
     }
     cat("\n")
-    parallel.mcexit()
+    parallel_mcexit()
   }
   wrapper_f <- function(i) {
     out <- FUN(i)
