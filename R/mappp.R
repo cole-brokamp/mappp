@@ -1,6 +1,7 @@
 #' map in parallel with progress
 #'
-#' This function is a wrapper around purrr::map() with some extras on top,
+#' This function is a wrapper around \code{purrr::map()}
+#' (which applies a function to each element of a list or atomic vector) with some extras on top,
 #' including parallel computation, progress bar, error handling, and result caching.
 #'
 #' \code{mappp} is designed for long computations and as such it always uses a progress bar,
@@ -29,9 +30,10 @@
 #' @param error_capture apply function to all elements and return those that error as \code{NA}
 #' ; this also messages user with name/index of offending element and resulting error message
 #' @param error_quiet quiet individual error messages when capturing error messages? or show them as they occur?
+#' @return a list the same length as \code{.x}
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' X <- list("x" = 100, "y" = "a", "z" = 200)
 #' slow_log <- function(.x) {
 #'   Sys.sleep(0.5)

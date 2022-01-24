@@ -36,8 +36,12 @@ mappp(
 specified as an integer, or it will guess the number of cores available
 with parallelly::availableCores(). won't have an effect if parallel is FALSE}
 }
+\value{
+a list the same length as \code{.x}
+}
 \description{
-This function is a wrapper around purrr::map() with some extras on top,
+This function is a wrapper around \code{purrr::map()}
+(which applies a function to each element of a list or atomic vector) with some extras on top,
 including parallel computation, progress bar, error handling, and result caching.
 }
 \details{
@@ -56,7 +60,7 @@ to the file `.progress`. Use a shell and `tail -f .progress` to see the
 updates.
 }
 \examples{
-\dontrun{
+\donttest{
 X <- list("x" = 100, "y" = "a", "z" = 200)
 slow_log <- function(.x) {
   Sys.sleep(0.5)
