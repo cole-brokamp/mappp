@@ -4,39 +4,22 @@
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/mappp)](https://CRAN.R-project.org/package=mappp)
-[![R build status](https://github.com/cole-brokamp/mappp/workflows/R-CMD-check/badge.svg)](https://github.com/cole-brokamp/mappp/actions)
+[![R-CMD-check](https://github.com/cole-brokamp/mappp/workflows/R-CMD-check/badge.svg)](https://github.com/cole-brokamp/mappp/actions)
 <!-- badges: end -->
 
 The goal of mappp is to provide a simple implementation of `purrr::map` or `base::lapply` that provides enhanced features like parallel computation, progress bars, error handling, and result caching.
 
 - **progress**: `mappp()` will always report its progress
+- **error handling**: by default, if `mappp()` encounters an error, it will return `NA` instead of interrupting the entire calculation
 - **parallel**: if `parallel = TRUE`, `mappp()` will attempt to calculate in parallel by using the maximum number of available cores
 - **cache**: if `cache = TRUE`, `mappp()` will memoise the results in a local cache folder
-- **error handling**: by default, if `mappp()` encounters an error, it will return `NA` instead of interrupting the entire calculation
+
+Please note that this package relies on forking via [`parallel::mclapply()`](https://stat.ethz.ch/R-manual/R-devel/library/parallel/html/mclapply.html) which means that parallel computation is not available on Windows platforms.
 
 ## Installation
 
-mappp is currently not hosted on CRAN and the development version of mappp can be installed from GitHub with:
+mappp is hosted on CRAN and can be installed with:
 
 ```r
-remotes::install_github('cole-brokamp/mappp')
-```
-
-<!-- You can install the released version of mappp from [CRAN](https://CRAN.R-project.org) with: -->
-
-<!-- ``` r -->
-<!-- install.packages("mappp") -->
-<!-- ``` -->
-
-## Examples
-
-```r
-X <- list('x' = 100, 'y' = 'a', 'z' = 200)
-slow_log <- function(.x) {Sys.sleep(0.5); log(.x)}
-
-# by default returns NA on error
-mappp(X, slow_log)
-
-# when not using error, entire calculation will fail
-mappp(X, slow_log, error.value=NULL)
+install.packages("mappp")
 ```
