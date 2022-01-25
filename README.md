@@ -18,8 +18,8 @@ Please note that this package relies on forking via [`parallel::mclapply()`](htt
 
 ## Installation
 
-mappp is currently not hosted on CRAN and the latest version of mappp can be installed from GitHub with:
+mappp is hosted on CRAN and can be installed with:
 
 ```r
-remotes::install_github('cole-brokamp/mappp')
+install.packages("mappp")
 ```
