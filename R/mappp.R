@@ -42,7 +42,7 @@
 #' # by default returns NA on error
 #' mappp(X, slow_log)
 #' # when not using error, entire calculation will fail
-#' mappp(X, slow_log, error_capture = FALSE)
+#' # mappp(X, slow_log, error_capture = FALSE)
 #' # showing error messages when they occur rather than afterwards can be useful
 #' # but will cause problems with progress bar displays
 #' mappp(X, slow_log, error_quiet = FALSE)
